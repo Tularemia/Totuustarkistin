@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"> 
+    <style>
+      html, body {
+	  width: 200px;
+      }      
+      .hidden {
+	  display: none;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="goodtxt" class="hidden"><p>Tämä sivu on luotettava, sen tarjoama tieto perustuu tieteelliseen tutkimukseen</p></div>
+    <div id="dubioustxt" class="hidden"><p>Tämä sivu ei ole täysin luotettava, koska sillä ei ole riittävästi tutkittuja lähteitä</p></div>
+    <div id="badtxt" class="hidden"><p>Tämä sivu ei ole luotettava, koska sillä ei ole tutkittuja lähteitä</p></div>
+    <div id="unknowntxt" class="hidden"><p>Tämän sivun luotettavuutta ei voitu määrittää</p></div>
+    <script src="popup.js"></script>
+  </body>
+</html>

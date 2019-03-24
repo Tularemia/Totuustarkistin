@@ -1,0 +1,34 @@
+{
+  "name": "Totuustarkist.in",
+  "version": "0.1.1",
+  "description": "Arvioi tiedon luotettavuutta",
+    "permissions": ["tabs", "notifications"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+      "default_popup": "popup.html",
+      "default_icon": "images/unknown.png",
+      "default_title": "Totuustarkist.in"
+  },
+    "content_scripts": [
+    {
+	"matches": ["https://www.google.com/*","https://www.google.fi/*","http://www.google.com/*","http://www.google.fi/*"],
+	"js": ["content.js"],
+	"css": ["content.css"]
+    }
+    ],
+  "icons": {
+    "16": "images/16.png",
+    "32": "images/good.png",
+    "128": "images/128.png"
+  },
+  "web_accessible_resources": [
+      "images/good.png",
+      "images/dubious.png",
+      "images/bad.png",
+      "images/unknown.png"
+  ],
+  "manifest_version": 2
+}
