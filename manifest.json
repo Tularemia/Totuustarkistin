@@ -2,7 +2,7 @@
   "name": "Totuustarkist.in",
   "version": "0.1.1",
   "description": "Arvioi tiedon luotettavuutta",
-    "permissions": ["tabs", "notifications"],
+    "permissions": ["tabs", "notifications", "storage"],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
