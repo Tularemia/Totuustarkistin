@@ -1,6 +1,6 @@
 {
   "name": "Totuustarkist.in",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Arvioi tiedon luotettavuutta",
     "permissions": ["tabs", "notifications", "storage"],
   "background": {

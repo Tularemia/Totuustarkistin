@@ -17,13 +17,13 @@ function isTrustworthy(url, lists){
     return s % 3;
 }
 
-function getLists(url, f){
+function getTrust(url, f){
     chrome.storage.sync.get(["whitelist", "blacklist"], function(lists){f(isTrustworthy(url, lists))});
 }
 
 function receiveURL(message, sender, sendResponse){
     if(message.url != null){
-	getLists(message.url, function(trust){sendResponse({trust: trust})});
+	getTrust(message.url, function(trust){sendResponse({trust: trust})});
 	return true;
     }
 }
@@ -34,7 +34,7 @@ function changeIcon(trust){
 
 function monitorChangeTabs(activeInfo){
     chrome.tabs.get(activeInfo.tabId, function(tab){
-	getLists(tab.url, function(trust){
+	getTrust(tab.url, function(trust){
 	    changeIcon(trust);
 	});
     });
@@ -42,8 +42,7 @@ function monitorChangeTabs(activeInfo){
 
 function monitorUpdateTabs(tabid, changeInfo, tab){
     if (changeInfo.status == "complete" && tab.active){
-	getLists(tab.url, function (trust){
-	    //var trust = isTrustworthy(tab.url, lists);
+	getTrust(tab.url, function (trust){
 	    if (trust == 0){
      		chrome.notifications.create(
      		    {type:"basic", iconUrl:"images/bad.png", title:"Varoitus", message:"Tällä sivulla oleva tieto ei ole luotettavaa"}
