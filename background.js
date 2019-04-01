@@ -1,21 +1,54 @@
 function isTrustworthy(url, lists){
     var googleRegexp = /^https?:\/\/(www\.)?google\.[a-z]{2,6}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?$/i;
     if (googleRegexp.test(url))
-	return 3;
+	return sourceNumber(url, 3);
     var domainRegexp = /^https?:\/\/(www\.)?([-a-zA-Z0-9@:%._\+~#=]+\.[a-z]{2,6})\//i;
     var match = url.match(domainRegexp);
     if (match == null)
-	return 3;
+	return sourceNumber(url, 3);
     if (lists.whitelist != null && lists.whitelist.indexOf(match[2]) != -1)
-	return 2;
+	return sourceNumber(url, 2);
     if (lists.blacklist != null && lists.blacklist.indexOf(match[2]) != -1)
-	return 0;
+	return sourceNumber(url, 0);
     var s=0;
     for (var i=0;i<match[2].length;i++){
  	s = s+match[2].charCodeAt(i);
     }
-    return s % 3;
+    var t = s % 3;
+    return sourceNumber(url, t);
 }
+function hashUrl(url){
+    var hash = 0;
+    for (var i=0; i<url.length; i++){
+	hash = (hash << 5) - hash + url.charCodeAt(i);
+	hash |= 0;
+    }
+    hash = hash / (2**32) + 0.5;
+    return hash;
+}
+
+function sourceNumber(url, trust){
+    var nsrc = -1;
+    var hash = 0;
+    var hash = hashUrl(url);
+    switch (trust){
+    case 0: // Bernoulli
+	nsrc = 0;	
+	if(hash < 0.25)
+	    nsrc = 1;
+	break;
+    case 1: // Tasajakauma
+	nsrc = Math.ceil(hash*5);
+	break;
+    case 2: // Geometrinen
+	var p = 0.3;
+	var k = Math.log(1-hash)/Math.log(1-p);
+	nsrc = Math.floor(k) + 4;
+	break;
+    }
+    return {trust:trust, sources:nsrc};
+}
+
 
 function getTrust(url, f){
     chrome.storage.sync.get(["whitelist", "blacklist"], function(lists){f(isTrustworthy(url, lists))});
@@ -23,7 +56,7 @@ function getTrust(url, f){
 
 function receiveURL(message, sender, sendResponse){
     if(message.url != null){
-	getTrust(message.url, function(trust){sendResponse({trust: trust})});
+	getTrust(message.url, function(trustobj){sendResponse(trustobj);});
 	return true;
     }
 }
@@ -34,21 +67,21 @@ function changeIcon(trust){
 
 function monitorChangeTabs(activeInfo){
     chrome.tabs.get(activeInfo.tabId, function(tab){
-	getTrust(tab.url, function(trust){
-	    changeIcon(trust);
+	getTrust(tab.url, function(trustobj){
+	    changeIcon(trustobj.trust);
 	});
     });
 }
 
 function monitorUpdateTabs(tabid, changeInfo, tab){
     if (changeInfo.status == "complete" && tab.active){
-	getTrust(tab.url, function (trust){
-	    if (trust == 0){
+	getTrust(tab.url, function (trustobj){
+	    if (trustobj.trust == 0){
      		chrome.notifications.create(
      		    {type:"basic", iconUrl:"images/bad.png", title:"Varoitus", message:"Tällä sivulla oleva tieto ei ole luotettavaa"}
 		);
 	    }
-	    changeIcon(trust);
+	    changeIcon(trustobj.trust);
 	});
     }
 }
