@@ -1,34 +1,38 @@
 {
-  "name": "Totuustarkist.in",
-  "version": "0.1.2",
-  "description": "Arvioi tiedon luotettavuutta",
+    "name": "Totuustarkist.in",
+    "version": "0.1.3",
+    "description": "Arvioi tiedon luotettavuutta",
     "permissions": ["tabs", "notifications", "storage"],
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
-  "browser_action": {
-      "default_popup": "popup.html",
-      "default_icon": "images/unknown.png",
-      "default_title": "Totuustarkist.in"
-  },
+    "background": {
+	"scripts": ["background.js"],
+	"persistent": false
+    },
+    "browser_action": {
+	"default_popup": "popup.html",
+	"default_icon": "images/unknown.png",
+	"default_title": "Totuustarkist.in"
+    },
     "content_scripts": [
-    {
-	"matches": ["https://www.google.com/*","https://www.google.fi/*","http://www.google.com/*","http://www.google.fi/*"],
-	"js": ["content.js"],
-	"css": ["content.css"]
-    }
+	{
+	    "matches": ["https://www.google.com/*","https://www.google.fi/*","http://www.google.com/*","http://www.google.fi/*"],
+	    "js": ["googlecontent.js"],
+	    "css": ["googlecontent.css"]
+	},
+	{
+	    "matches": ["<all_urls>"],
+	    "js": ["readcontent.js"]
+	}
     ],
-  "icons": {
-    "16": "images/16.png",
-    "32": "images/good.png",
-    "128": "images/128.png"
-  },
-  "web_accessible_resources": [
-      "images/good.png",
-      "images/dubious.png",
-      "images/bad.png",
-      "images/unknown.png"
-  ],
-  "manifest_version": 2
+    "icons": {
+	"16": "images/16.png",
+	"32": "images/good.png",
+	"128": "images/128.png"
+    },
+    "web_accessible_resources": [
+	"images/good.png",
+	"images/dubious.png",
+	"images/bad.png",
+	"images/unknown.png"
+    ],
+    "manifest_version": 2
 }
